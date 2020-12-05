@@ -1,42 +1,38 @@
 package ig.api.client.rest;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.HashMap;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 public class RestClient {
 
-    private HttpClient client;
+    private String baseUri;
 
-    public RestClient() {
-        client = HttpClient.newHttpClient();
+    public RestClient(String environment) {
+
     }
 
     public void Authenticate(String username, String password, String apiKey) throws IOException, InterruptedException {
-
-        HashMap values = new HashMap<String, String>() {
-            {
-                put("identifier", username);
-                put("password", password);
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPost httpPost = new HttpPost(baseUri);
+            String json = "{\"id\":1,\"name\":\"John\"}";
+            StringEntity entity = new StringEntity(json);
+            httpPost.setEntity(entity);
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+            try (CloseableHttpResponse response = client.execute(httpPost)) {
+                System.out.println("----------------------------------------");
+                System.out.println(response.getStatusLine());
+                System.out.println(EntityUtils.toString(response.getEntity()));
             }
-        };
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBody = objectMapper
-                .writeValueAsString(values);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://httpbin.org/post"))
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        System.out.println(response.body());
+        }
     }
 }
