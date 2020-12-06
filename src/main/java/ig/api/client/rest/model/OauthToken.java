@@ -1,4 +1,4 @@
-package ig.api.client.rest.response;
+package ig.api.client.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

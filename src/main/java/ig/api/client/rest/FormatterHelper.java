@@ -1,15 +1,12 @@
 package ig.api.client.rest;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
-import java.util.Date;
 
 public class FormatterHelper {
 

@@ -1,5 +1,6 @@
 package ig.api.client.rest.response;
 
+import ig.api.client.rest.model.OauthToken;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
