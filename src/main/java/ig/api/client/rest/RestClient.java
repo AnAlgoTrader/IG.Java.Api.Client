@@ -16,11 +16,13 @@ import org.apache.http.impl.client.HttpClients;
 public class RestClient {
 
     private final String baseUri;
-    private final String SESSION_URI = "/gateway/deal/session";
+    private final String SESSION_URI = "/gateway/deal/session";    
+    private final CloseableHttpClient closeableHttpClient;
     private AuthenticationResponse authenticationResponse;
 
     public RestClient(String environment) {
         baseUri = String.format("https://%sapi.ig.com", "live".equals(environment) ? "" : "demo-");
+        closeableHttpClient = HttpClients.createDefault();
     }
 
     private boolean ShouldAuthenticate(String authResponsePath) throws IOException {
@@ -42,29 +44,32 @@ public class RestClient {
     }
 
     public AuthenticationResponse Authenticate(String username, String password, String apiKey, String authResponsePath) throws IOException, InterruptedException {
-        
+
         if (ShouldAuthenticate(authResponsePath)) {
-            try (CloseableHttpClient client = HttpClients.createDefault()) {
-                HttpPost httpPost = new HttpPost(baseUri + SESSION_URI);
-                AuthenticationRequest request = new AuthenticationRequest();
-                request.setIdentifier(username);
-                request.setPassword(password);
-                StringEntity entity = new StringEntity(AuthenticationRequest.toJsonString(request));
-                httpPost.setEntity(entity);
-                httpPost.setHeader("Accept", "application/json");
-                httpPost.setHeader("Content-type", "application/json");
-                httpPost.setHeader("Version", "3");
-                httpPost.setHeader("X-IG-API-KEY", apiKey);
-                try (CloseableHttpResponse response = client.execute(httpPost)) {
-                    String responseString = new BasicResponseHandler().handleResponse(response);
-                    AuthenticationResponse authResponse = AuthenticationResponse.fromJsonString(responseString);
-                    authResponse.setDate(new Date(System.currentTimeMillis()));                    
-                    authenticationResponse = authResponse;
-                    Files.write(Path.of(authResponsePath), AuthenticationResponse.toJsonString(authResponse).getBytes());
-                }
+
+            HttpPost httpPost = new HttpPost(baseUri + SESSION_URI);
+            AuthenticationRequest request = new AuthenticationRequest();
+            request.setIdentifier(username);
+            request.setPassword(password);
+            StringEntity entity = new StringEntity(AuthenticationRequest.toJsonString(request));
+            httpPost.setEntity(entity);
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+            httpPost.setHeader("Version", "3");
+            httpPost.setHeader("X-IG-API-KEY", apiKey);
+            try (CloseableHttpResponse response = closeableHttpClient.execute(httpPost)) {
+                String responseString = new BasicResponseHandler().handleResponse(response);
+                AuthenticationResponse authResponse = AuthenticationResponse.fromJsonString(responseString);
+                authResponse.setDate(new Date(System.currentTimeMillis()));
+                authenticationResponse = authResponse;
+                Files.write(Path.of(authResponsePath), AuthenticationResponse.toJsonString(authResponse).getBytes());
             }
         }
-        
+
         return authenticationResponse;
+    }
+    
+    public void Close() throws IOException{
+        closeableHttpClient.close();
     }
 }
