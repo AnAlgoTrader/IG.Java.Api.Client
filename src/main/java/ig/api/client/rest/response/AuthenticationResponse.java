@@ -13,10 +13,11 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import ig.api.client.rest.FormatterHelper;
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.Date;
 
 public class AuthenticationResponse {
 
-    private String date;
+    private Date date;
     private String clientID;
     private String accountID;
     private long timezoneOffset;
@@ -24,12 +25,12 @@ public class AuthenticationResponse {
     private OauthToken oauthToken;
 
     @JsonProperty("date")
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
     @JsonProperty("date")
-    public void setDate(String value) {
+    public void setDate(Date value) {
         this.date = value;
     }
 
