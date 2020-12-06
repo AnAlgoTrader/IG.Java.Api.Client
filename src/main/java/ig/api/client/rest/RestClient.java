@@ -32,6 +32,8 @@ public class RestClient {
         } else {
             String fileContent = Files.readString(filePath);
             AuthenticationResponse authResponse = AuthenticationResponse.fromJsonString(fileContent);
+            token = authResponse.getOauthToken().getAccessToken();
+            clientId = authResponse.getClientID();
             int hours = GetElapsedHours(authResponse.getDate(), new Date(System.currentTimeMillis()));
             return hours > 5;
         }
@@ -44,6 +46,8 @@ public class RestClient {
 
     public void Authenticate(String username, String password, String apiKey, String authResponsePath) throws IOException, InterruptedException {
 
+        key = apiKey;
+        
         if (ShouldAuthenticate(authResponsePath)) {
             try (CloseableHttpClient client = HttpClients.createDefault()) {
                 HttpPost httpPost = new HttpPost(baseUri + SESSION_URI);
@@ -59,8 +63,7 @@ public class RestClient {
                 try (CloseableHttpResponse response = client.execute(httpPost)) {
                     String responseString = new BasicResponseHandler().handleResponse(response);
                     AuthenticationResponse authResponse = AuthenticationResponse.fromJsonString(responseString);
-                    authResponse.setDate(new Date(System.currentTimeMillis()));
-                    key = apiKey;
+                    authResponse.setDate(new Date(System.currentTimeMillis()));                    
                     token = authResponse.getOauthToken().getAccessToken();
                     clientId = authResponse.getClientID();
                     Files.write(Path.of(authResponsePath), AuthenticationResponse.toJsonString(authResponse).getBytes());
