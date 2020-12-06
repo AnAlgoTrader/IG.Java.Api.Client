@@ -17,9 +17,7 @@ public class RestClient {
 
     private final String baseUri;
     private final String SESSION_URI = "/gateway/deal/session";
-    private String key;
-    private String token;
-    private String clientId;
+    private AuthenticationResponse authenticationResponse;
 
     public RestClient(String environment) {
         baseUri = String.format("https://%sapi.ig.com", "live".equals(environment) ? "" : "demo-");
@@ -32,8 +30,7 @@ public class RestClient {
         } else {
             String fileContent = Files.readString(filePath);
             AuthenticationResponse authResponse = AuthenticationResponse.fromJsonString(fileContent);
-            token = authResponse.getOauthToken().getAccessToken();
-            clientId = authResponse.getClientID();
+            authenticationResponse = authResponse;
             int hours = GetElapsedHours(authResponse.getDate(), new Date(System.currentTimeMillis()));
             return hours > 5;
         }
@@ -44,9 +41,7 @@ public class RestClient {
         return Math.abs((int) (end.getTime() - start.getTime()) / MILLI_TO_HOUR);
     }
 
-    public void Authenticate(String username, String password, String apiKey, String authResponsePath) throws IOException, InterruptedException {
-
-        key = apiKey;
+    public AuthenticationResponse Authenticate(String username, String password, String apiKey, String authResponsePath) throws IOException, InterruptedException {
         
         if (ShouldAuthenticate(authResponsePath)) {
             try (CloseableHttpClient client = HttpClients.createDefault()) {
@@ -64,11 +59,12 @@ public class RestClient {
                     String responseString = new BasicResponseHandler().handleResponse(response);
                     AuthenticationResponse authResponse = AuthenticationResponse.fromJsonString(responseString);
                     authResponse.setDate(new Date(System.currentTimeMillis()));                    
-                    token = authResponse.getOauthToken().getAccessToken();
-                    clientId = authResponse.getClientID();
+                    authenticationResponse = authResponse;
                     Files.write(Path.of(authResponsePath), AuthenticationResponse.toJsonString(authResponse).getBytes());
                 }
             }
         }
+        
+        return authenticationResponse;
     }
 }
