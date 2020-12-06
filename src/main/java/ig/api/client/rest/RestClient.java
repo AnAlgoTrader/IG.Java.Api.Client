@@ -3,6 +3,7 @@ package ig.api.client.rest;
 import ig.api.client.rest.request.AuthenticationRequest;
 import ig.api.client.rest.response.AccountsResponse;
 import ig.api.client.rest.response.AuthenticationResponse;
+import ig.api.client.rest.response.PositionsResponse;
 import java.io.IOException;
 import java.util.Date;
 import org.apache.http.HttpEntity;
@@ -21,6 +22,14 @@ public class RestClient {
     private final String baseUri;
     private final String SESSION_URI = "/gateway/deal/session";
     private final String ACCOUNTS_URI = "/gateway/deal/accounts";
+    private final String TRANSACTIONS_URI = "/gateway/deal/history/transactions";
+    private final String ACTIVITIES_URI = "/gateway/deal/history/activity";
+    private final String PRICES_URI = "/gateway/deal/prices";
+    private final String POSITIONS_OTC_URI = "/gateway/deal/positions/otc";
+    private final String POSITIONS_URI = "/gateway/deal/positions";
+    private final String WORKING_ORDERS_URI = "/gateway/deal/workingorders/otc";
+    private final String TRADE_CONFIRM_URI = "/gateway/deal/confirms";
+
     private final CloseableHttpClient closeableHttpClient;
     private AuthenticationResponse authenticationResponse;
     private String key;
@@ -28,6 +37,11 @@ public class RestClient {
     public RestClient(String environment) {
         baseUri = String.format("https://%sapi.ig.com", "live".equals(environment) ? "" : "demo-");
         closeableHttpClient = HttpClients.createDefault();
+    }
+
+    public PositionsResponse GetPositions() throws IOException {
+        String response = Get(baseUri + POSITIONS_URI, "2");
+        return PositionsResponse.fromJsonString(response);
     }
 
     public AccountsResponse GetAccounts() throws IOException {
