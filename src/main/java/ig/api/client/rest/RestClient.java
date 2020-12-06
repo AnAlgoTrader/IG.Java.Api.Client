@@ -4,8 +4,6 @@ import ig.api.client.rest.request.AuthenticationRequest;
 import ig.api.client.rest.response.AccountsResponse;
 import ig.api.client.rest.response.AuthenticationResponse;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Date;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
