@@ -1,10 +1,13 @@
 package ig.api.client.rest;
 
 import ig.api.client.rest.helper.PositionsHelper;
+import ig.api.client.rest.model.Position;
 import ig.api.client.rest.request.AuthenticationRequest;
+import ig.api.client.rest.request.CloseMarketPositionRequest;
 import ig.api.client.rest.response.AccountsResponse;
 import ig.api.client.rest.response.ActivitiesResponse;
 import ig.api.client.rest.response.AuthenticationResponse;
+import ig.api.client.rest.response.ClosePositionResponse;
 import ig.api.client.rest.response.PositionsResponse;
 import ig.api.client.rest.response.PositionsResponseItem;
 import ig.api.client.rest.response.TransactionsResponse;
@@ -41,15 +44,15 @@ public class RestClient {
         baseUri = String.format("https://%sapi.ig.com", "live".equals(environment) ? "" : "demo-");
         closeableHttpClient = HttpClients.createDefault();
     }
-    
-    public ActivitiesResponse GetActivities(Date from) throws IOException{
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+
+    public ActivitiesResponse GetActivities(Date from) throws IOException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String response = Get(baseUri + ACTIVITIES_URI + "?from=" + dateFormat.format(from), "3");
         return ActivitiesResponse.fromJsonString(response);
     }
-    
-    public TransactionsResponse GetTransactions(Date from) throws IOException{
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+
+    public TransactionsResponse GetTransactions(Date from) throws IOException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String response = Get(baseUri + TRANSACTIONS_URI + "?from=" + dateFormat.format(from), "2");
         return TransactionsResponse.fromJsonString(response);
     }
@@ -57,7 +60,7 @@ public class RestClient {
     public PositionsResponse GetPositions() throws IOException {
         String strResponse = Get(baseUri + POSITIONS_URI, "2");
         PositionsResponse positionsResponse = PositionsResponse.fromJsonString(strResponse);
-        for(PositionsResponseItem positionItem : positionsResponse.getPositions()){
+        for (PositionsResponseItem positionItem : positionsResponse.getPositions()) {
             positionItem.getPosition().setProfitLoss(PositionsHelper.CalculateProfitLoss(positionItem));
             positionItem.getPosition().setColor(PositionsHelper.CalculateColor(positionItem));
             positionItem.getPosition().setSpread(positionItem.getMarket().getOffer() - positionItem.getMarket().getBid());
@@ -68,6 +71,18 @@ public class RestClient {
     public AccountsResponse GetAccounts() throws IOException {
         String response = Get(baseUri + ACCOUNTS_URI, "1");
         return AccountsResponse.fromJsonString(response);
+    }
+    
+    public ClosePositionResponse CloseMarketPosition(Position position) throws IOException{
+        CloseMarketPositionRequest request = new CloseMarketPositionRequest();
+        request.setDealID(position.getDealID());
+        request.setOrderType("MARKET");
+        request.setSize(position.getSize());
+        String direction = "BUY".equals(position.getDirection()) ? "SELL" : "BUY";
+        request.setDirection(direction);
+        String jsonBody = CloseMarketPositionRequest.toJsonString(request);
+        String response = Post(baseUri + POSITIONS_OTC_URI, "1", jsonBody, true);
+        return ClosePositionResponse.fromJsonString(response);
     }
 
     public void Authenticate(String username, String password, String apiKey, String authResponsePath) throws IOException, InterruptedException {
@@ -89,6 +104,24 @@ public class RestClient {
             AuthenticationResponse authResponse = AuthenticationResponse.fromJsonString(responseString);
             authResponse.setDate(new Date(System.currentTimeMillis()));
             authenticationResponse = authResponse;
+        }
+    }
+
+    public String Post(String url, String version, String jsonBody, boolean delete) throws IOException {
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.setHeader(HttpHeaders.ACCEPT, "application/json");
+        httpPost.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+        httpPost.setHeader("VERSION", version);
+        httpPost.setHeader("X-IG-API-KEY", key);
+        httpPost.setHeader("IG-ACCOUNT-ID", authenticationResponse.getAccountID());
+        if (delete) {
+            httpPost.setHeader("_method", "DELETE");
+        }
+        httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + authenticationResponse.getOauthToken().getAccessToken());
+        httpPost.setEntity(new StringEntity(jsonBody));
+        try (CloseableHttpResponse response = closeableHttpClient.execute(httpPost)) {
+            HttpEntity entity = response.getEntity();
+            return EntityUtils.toString(entity);
         }
     }
 
