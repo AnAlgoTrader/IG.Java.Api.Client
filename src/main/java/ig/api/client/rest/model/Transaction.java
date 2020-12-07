@@ -1,12 +1,11 @@
 package ig.api.client.rest.model;
 
 import com.fasterxml.jackson.annotation.*;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 public class Transaction {
 
-    private LocalDate date;
+    private String date;
     private OffsetDateTime dateUTC;
     private OffsetDateTime openDateUTC;
     private String instrumentName;
@@ -21,12 +20,12 @@ public class Transaction {
     private boolean cashTransaction;
 
     @JsonProperty("date")
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
     @JsonProperty("date")
-    public void setDate(LocalDate value) {
+    public void setDate(String value) {
         this.date = value;
     }
 
