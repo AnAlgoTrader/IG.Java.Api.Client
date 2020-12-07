@@ -1,13 +1,15 @@
 package ig.api.client.rest;
 
 import ig.api.client.rest.helper.PositionsHelper;
-import ig.api.client.rest.model.Position;
 import ig.api.client.rest.request.AuthenticationRequest;
 import ig.api.client.rest.response.AccountsResponse;
+import ig.api.client.rest.response.ActivitiesResponse;
 import ig.api.client.rest.response.AuthenticationResponse;
 import ig.api.client.rest.response.PositionsResponse;
 import ig.api.client.rest.response.PositionsResponseItem;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -40,6 +42,12 @@ public class RestClient {
     public RestClient(String environment) {
         baseUri = String.format("https://%sapi.ig.com", "live".equals(environment) ? "" : "demo-");
         closeableHttpClient = HttpClients.createDefault();
+    }
+    
+    public ActivitiesResponse GetActivities(Date from) throws IOException{
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+        String response = Get(baseUri + ACTIVITIES_URI + "?from=" + dateFormat.format(from), "3");
+        return ActivitiesResponse.fromJsonString(response);
     }
 
     public PositionsResponse GetPositions() throws IOException {
