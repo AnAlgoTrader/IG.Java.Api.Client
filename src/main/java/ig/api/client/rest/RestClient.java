@@ -60,6 +60,7 @@ public class RestClient {
         for(PositionsResponseItem positionItem : positionsResponse.getPositions()){
             positionItem.getPosition().setProfitLoss(PositionsHelper.CalculateProfitLoss(positionItem));
             positionItem.getPosition().setColor(PositionsHelper.CalculateColor(positionItem));
+            positionItem.getPosition().setSpread(positionItem.getMarket().getOffer() - positionItem.getMarket().getBid());
         }
         return positionsResponse;
     }

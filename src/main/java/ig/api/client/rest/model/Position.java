@@ -20,6 +20,7 @@ public class Position {
     private double limitedRiskPremium;
     private double profitLoss;
     private String color;
+    private double spread;
 
     @JsonProperty("contractSize")
     public double getContractSize() { return contractSize; }
@@ -101,4 +102,7 @@ public class Position {
     
     public String getColor() { return color; }
     public void setColor(String value) { this.color = value; }    
+    
+    public double getSpread() { return spread; }
+    public void setSpread(double value) { this.spread = value; }  
 }
