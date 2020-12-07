@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import ig.api.client.rest.helper.FormatterHelper;
+import ig.api.client.rest.helper.FormatHelper;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.Date;
@@ -97,7 +97,7 @@ public class AuthenticationResponse {
             @Override
             public OffsetDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
                 String value = jsonParser.getText();
-                return FormatterHelper.parseDateTimeString(value);
+                return FormatHelper.parseDateTimeString(value);
             }
         });
         mapper.registerModule(module);

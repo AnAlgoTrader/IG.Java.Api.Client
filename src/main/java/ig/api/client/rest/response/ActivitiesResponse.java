@@ -2,19 +2,19 @@ package ig.api.client.rest.response;
 
 import com.fasterxml.jackson.annotation.*;
 import ig.api.client.rest.model.Activity;
-import ig.api.client.rest.model.Metadata;
+import ig.api.client.rest.model.ActivityMetadata;
 import java.io.IOException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import ig.api.client.rest.helper.FormatterHelper;
+import ig.api.client.rest.helper.FormatHelper;
 import java.time.OffsetDateTime;
 
 public class ActivitiesResponse {
 
     private Activity[] activities;
-    private Metadata metadata;
+    private ActivityMetadata metadata;
 
     @JsonProperty("activities")
     public Activity[] getActivities() {
@@ -27,12 +27,12 @@ public class ActivitiesResponse {
     }
 
     @JsonProperty("metadata")
-    public Metadata getMetadata() {
+    public ActivityMetadata getMetadata() {
         return metadata;
     }
 
     @JsonProperty("metadata")
-    public void setMetadata(Metadata value) {
+    public void setMetadata(ActivityMetadata value) {
         this.metadata = value;
     }
 
@@ -56,7 +56,7 @@ public class ActivitiesResponse {
             @Override
             public OffsetDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
                 String value = jsonParser.getText();
-                return FormatterHelper.parseDateTimeString(value);
+                return FormatHelper.parseDateTimeString(value);
             }
         });
         mapper.registerModule(module);

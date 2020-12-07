@@ -1,7 +1,9 @@
 package ig.api.client.rest.response;
 
-import ig.api.client.rest.model.Account;
 import com.fasterxml.jackson.annotation.*;
+import ig.api.client.rest.model.Transaction;
+import ig.api.client.rest.model.TransactionMetadata;
+
 import java.io.IOException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -10,25 +12,37 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import ig.api.client.rest.helper.FormatHelper;
 import java.time.OffsetDateTime;
 
-public class AccountsResponse {
 
-    private Account[] accounts;
+public class TransactionsResponse {
 
-    @JsonProperty("accounts")
-    public Account[] getAccounts() {
-        return accounts;
+    private Transaction[] transactions;
+    private TransactionMetadata metadata;
+
+    @JsonProperty("transactions")
+    public Transaction[] getTransactions() {
+        return transactions;
     }
 
-    @JsonProperty("accounts")
-    public void setAccounts(Account[] value) {
-        this.accounts = value;
+    @JsonProperty("transactions")
+    public void setTransactions(Transaction[] value) {
+        this.transactions = value;
+    }
+
+    @JsonProperty("metadata")
+    public TransactionMetadata getMetadata() {
+        return metadata;
+    }
+
+    @JsonProperty("metadata")
+    public void setMetadata(TransactionMetadata value) {
+        this.metadata = value;
     }
     
-      public static AccountsResponse fromJsonString(String json) throws IOException {
+      public static TransactionsResponse fromJsonString(String json) throws IOException {
         return getObjectReader().readValue(json);
     }
 
-    public static String toJsonString(AccountsResponse obj) throws JsonProcessingException {
+    public static String toJsonString(TransactionsResponse obj) throws JsonProcessingException {
         return getObjectWriter().writeValueAsString(obj);
     }
 
@@ -48,8 +62,8 @@ public class AccountsResponse {
             }
         });
         mapper.registerModule(module);
-        reader = mapper.readerFor(AccountsResponse.class);
-        writer = mapper.writerFor(AccountsResponse.class);
+        reader = mapper.readerFor(TransactionsResponse.class);
+        writer = mapper.writerFor(TransactionsResponse.class);
     }
 
     private static ObjectReader getObjectReader() {

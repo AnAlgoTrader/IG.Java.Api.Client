@@ -7,6 +7,7 @@ import ig.api.client.rest.response.ActivitiesResponse;
 import ig.api.client.rest.response.AuthenticationResponse;
 import ig.api.client.rest.response.PositionsResponse;
 import ig.api.client.rest.response.PositionsResponseItem;
+import ig.api.client.rest.response.TransactionsResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,11 +30,8 @@ public class RestClient {
     private final String ACCOUNTS_URI = "/gateway/deal/accounts";
     private final String TRANSACTIONS_URI = "/gateway/deal/history/transactions";
     private final String ACTIVITIES_URI = "/gateway/deal/history/activity";
-    private final String PRICES_URI = "/gateway/deal/prices";
     private final String POSITIONS_OTC_URI = "/gateway/deal/positions/otc";
     private final String POSITIONS_URI = "/gateway/deal/positions";
-    private final String WORKING_ORDERS_URI = "/gateway/deal/workingorders/otc";
-    private final String TRADE_CONFIRM_URI = "/gateway/deal/confirms";
 
     private final CloseableHttpClient closeableHttpClient;
     private AuthenticationResponse authenticationResponse;
@@ -48,6 +46,12 @@ public class RestClient {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
         String response = Get(baseUri + ACTIVITIES_URI + "?from=" + dateFormat.format(from), "3");
         return ActivitiesResponse.fromJsonString(response);
+    }
+    
+    public TransactionsResponse GetTransactions(Date from) throws IOException{
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+        String response = Get(baseUri + TRANSACTIONS_URI + "?from=" + dateFormat.format(from), "2");
+        return TransactionsResponse.fromJsonString(response);
     }
 
     public PositionsResponse GetPositions() throws IOException {

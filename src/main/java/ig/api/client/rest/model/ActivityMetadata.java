@@ -2,17 +2,17 @@ package ig.api.client.rest.model;
 
 import com.fasterxml.jackson.annotation.*;
 
-public class Metadata {
+public class ActivityMetadata {
 
-    private Paging paging;
+    private ActivityMetadataPage paging;
 
     @JsonProperty("paging")
-    public Paging getPaging() {
+    public ActivityMetadataPage getPaging() {
         return paging;
     }
 
     @JsonProperty("paging")
-    public void setPaging(Paging value) {
+    public void setPaging(ActivityMetadataPage value) {
         this.paging = value;
     }
 }

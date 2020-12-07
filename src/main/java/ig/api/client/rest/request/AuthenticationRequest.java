@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import ig.api.client.rest.helper.FormatterHelper;
+import ig.api.client.rest.helper.FormatHelper;
 import java.time.OffsetDateTime;
 
 public class AuthenticationRequest {
@@ -55,7 +55,7 @@ public class AuthenticationRequest {
             @Override
             public OffsetDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
                 String value = jsonParser.getText();
-                return FormatterHelper.parseDateTimeString(value);
+                return FormatHelper.parseDateTimeString(value);
             }
         });
         mapper.registerModule(module);

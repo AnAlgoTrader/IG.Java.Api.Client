@@ -2,7 +2,7 @@ package ig.api.client.rest.model;
 
 import com.fasterxml.jackson.annotation.*;
 
-public class Paging {
+public class ActivityMetadataPage {
 
     private long size;
     private String next;
