@@ -1,13 +1,15 @@
 package ig.api.client.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import ig.api.client.rest.helper.PositionsHelper;
 import ig.api.client.rest.model.Position;
 import ig.api.client.rest.request.AuthenticationRequest;
 import ig.api.client.rest.request.CloseMarketPositionRequest;
+import ig.api.client.rest.request.OpenPositionRequest;
 import ig.api.client.rest.response.AccountsResponse;
 import ig.api.client.rest.response.ActivitiesResponse;
 import ig.api.client.rest.response.AuthenticationResponse;
-import ig.api.client.rest.response.ClosePositionResponse;
+import ig.api.client.rest.response.PositionActionResponse;
 import ig.api.client.rest.response.PositionsResponse;
 import ig.api.client.rest.response.PositionsResponseItem;
 import ig.api.client.rest.response.TransactionsResponse;
@@ -73,7 +75,7 @@ public class RestClient {
         return AccountsResponse.fromJsonString(response);
     }
     
-    public ClosePositionResponse CloseMarketPosition(Position position) throws IOException{
+    public PositionActionResponse CloseMarketPosition(Position position) throws IOException{
         CloseMarketPositionRequest request = new CloseMarketPositionRequest();
         request.setDealID(position.getDealID());
         request.setOrderType("MARKET");
@@ -82,7 +84,23 @@ public class RestClient {
         request.setDirection(direction);
         String jsonBody = CloseMarketPositionRequest.toJsonString(request);
         String response = Post(baseUri + POSITIONS_OTC_URI, "1", jsonBody, true);
-        return ClosePositionResponse.fromJsonString(response);
+        return PositionActionResponse.fromJsonString(response);
+    }
+    
+    public PositionActionResponse OpenMarketPosition(String side, String epic, double size) throws JsonProcessingException, IOException{
+        OpenPositionRequest request = new OpenPositionRequest();        
+        request.setEpic(epic);
+        request.setExpiry("DFB");
+        request.setDirection(side);
+        request.setSize(size);
+        request.setOrderType("MARKET");
+        request.setGuaranteedStop(false);
+        request.setTrailingStop(false);
+        request.setForceOpen(true);        
+        request.setCurrencyCode("GBP");        
+        String jsonBody = OpenPositionRequest.toJsonString(request);
+        String response = Post(baseUri + POSITIONS_OTC_URI, "2", jsonBody, false);
+        return PositionActionResponse.fromJsonString(response);
     }
 
     public void Authenticate(String username, String password, String apiKey, String authResponsePath) throws IOException, InterruptedException {

@@ -11,7 +11,7 @@ import ig.api.client.rest.helper.FormatHelper;
 import java.time.OffsetDateTime;
 
 
-public class ClosePositionResponse {
+public class PositionActionResponse {
 
     private String dealReference;
     private String errorCode;
@@ -36,11 +36,11 @@ public class ClosePositionResponse {
         this.errorCode = value;
     }
     
-      public static ClosePositionResponse fromJsonString(String json) throws IOException {
+      public static PositionActionResponse fromJsonString(String json) throws IOException {
         return getObjectReader().readValue(json);
     }
 
-    public static String toJsonString(ClosePositionResponse obj) throws JsonProcessingException {
+    public static String toJsonString(PositionActionResponse obj) throws JsonProcessingException {
         return getObjectWriter().writeValueAsString(obj);
     }
 
@@ -60,8 +60,8 @@ public class ClosePositionResponse {
             }
         });
         mapper.registerModule(module);
-        reader = mapper.readerFor(ClosePositionResponse.class);
-        writer = mapper.writerFor(ClosePositionResponse.class);
+        reader = mapper.readerFor(PositionActionResponse.class);
+        writer = mapper.writerFor(PositionActionResponse.class);
     }
 
     private static ObjectReader getObjectReader() {
