@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import ig.api.client.rest.FormatterHelper;
+import ig.api.client.rest.helper.FormatterHelper;
 import java.time.OffsetDateTime;
 
 public class PositionsResponse {

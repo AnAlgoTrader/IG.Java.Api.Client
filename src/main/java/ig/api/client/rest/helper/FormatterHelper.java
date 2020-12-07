@@ -1,4 +1,4 @@
-package ig.api.client.rest;
+package ig.api.client.rest.helper;
 
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;

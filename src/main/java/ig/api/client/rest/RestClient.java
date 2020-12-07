@@ -1,9 +1,12 @@
 package ig.api.client.rest;
 
+import ig.api.client.rest.helper.PositionsHelper;
+import ig.api.client.rest.model.Position;
 import ig.api.client.rest.request.AuthenticationRequest;
 import ig.api.client.rest.response.AccountsResponse;
 import ig.api.client.rest.response.AuthenticationResponse;
 import ig.api.client.rest.response.PositionsResponse;
+import ig.api.client.rest.response.PositionsResponseItem;
 import java.io.IOException;
 import java.util.Date;
 import org.apache.http.HttpEntity;
@@ -40,8 +43,13 @@ public class RestClient {
     }
 
     public PositionsResponse GetPositions() throws IOException {
-        String response = Get(baseUri + POSITIONS_URI, "2");
-        return PositionsResponse.fromJsonString(response);
+        String strResponse = Get(baseUri + POSITIONS_URI, "2");
+        PositionsResponse positionsResponse = PositionsResponse.fromJsonString(strResponse);
+        for(PositionsResponseItem positionItem : positionsResponse.getPositions()){
+            positionItem.getPosition().setProfitLoss(PositionsHelper.CalculateProfitLoss(positionItem));
+            positionItem.getPosition().setColor(PositionsHelper.CalculateColor(positionItem));
+        }
+        return positionsResponse;
     }
 
     public AccountsResponse GetAccounts() throws IOException {

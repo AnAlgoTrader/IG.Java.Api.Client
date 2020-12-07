@@ -1,7 +1,6 @@
 package ig.api.client.rest.model;
 
 import com.fasterxml.jackson.annotation.*;
-import java.time.OffsetDateTime;
 
 public class Position {
     private double contractSize;
@@ -19,6 +18,8 @@ public class Position {
     private double trailingStep;
     private double trailingStopDistance;
     private double limitedRiskPremium;
+    private double profitLoss;
+    private String color;
 
     @JsonProperty("contractSize")
     public double getContractSize() { return contractSize; }
@@ -94,4 +95,10 @@ public class Position {
     public double getLimitedRiskPremium() { return limitedRiskPremium; }
     @JsonProperty("limitedRiskPremium")
     public void setLimitedRiskPremium(double value) { this.limitedRiskPremium = value; }
+    
+    public double getProfitLoss() { return profitLoss; }
+    public void setProfitLoss(double value) { this.profitLoss = value; }    
+    
+    public String getColor() { return color; }
+    public void setColor(String value) { this.color = value; }    
 }

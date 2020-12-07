@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import ig.api.client.rest.FormatterHelper;
+import ig.api.client.rest.helper.FormatterHelper;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.Date;
